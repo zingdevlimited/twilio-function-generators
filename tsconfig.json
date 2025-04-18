@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    /* Basic Settings */
+    "target": "ES2022",                // Modern ECMAScript version
+    "module": "NodeNext",              // Align with Node.js ESM (or "CommonJS" if needed)
+    "moduleResolution": "NodeNext",    // Modern module resolution
+    "outDir": "./dist",                // Output directory
+    "rootDir": "./src",                // Source directory
+    "declaration": true,               // Generate .d.ts type files
+    "declarationMap": true,            // Generate sourcemaps for types
+    "sourceMap": true,
+
+    /* Strict Type-Checking */
+    "strict": true,                    // Enable all strict checks
+    "noImplicitAny": true,             // Prevent implicit 'any' types
+    "strictNullChecks": true,          // Enable strict null checks
+    "strictFunctionTypes": true,       // Strict function type checking
+    "strictBindCallApply": true,       // Strict bind/call/apply checks
+
+    /* Additional Checks */
+    "noUnusedLocals": true,            // Error on unused locals
+    "noUnusedParameters": true,        // Error on unused parameters
+    "noImplicitReturns": true,         // Error on missing returns
+    "noFallthroughCasesInSwitch": true,// Prevent switch fallthrough
+
+    /* Module Handling */
+    "esModuleInterop": true,           // Better ESM/CJS interop
+    "forceConsistentCasingInFileNames": true, // Case-sensitive file names
+
+    /* Project References */
+    "composite": true,                 // Enable project references
+    "incremental": true                // Enable incremental builds
+  },
+  "exclude": [
+    "**/__tests__",                    // Exclude test files
+    "node_modules",                    // Exclude dependencies
+    "dist"                             // Exclude build output
+  ],
+  "include": [
+    "src/**/*.ts"                      // Include all TS files in src
+  ]
+}
