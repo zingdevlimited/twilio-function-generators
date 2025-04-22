@@ -21,6 +21,7 @@ const OidcConfigSchema = z.object({
     OIDC_CLIENT_SECRET: z.string().min(1),
     OIDC_STATE_ENCRYPTION_KEY_IN_HEX: z.string().regex(/^[0-9A-Fa-f]{64}$/, "invalid key, should be 256 bit (32 byte) crypto random key encoded as 64 hexadecimal characters")
 });
+type OidcConfig = z.infer<typeof OidcConfigSchema>;
 
 const AuthStateSchema = z.object({
     codeVerifier: z.string(),
@@ -41,8 +42,18 @@ const SYNC_DOC_PROP_VALUES_ENCODING = "base64";
 const SYNC_DOC_NAME_PREFIX = "AuthState_";
 const LOGIN_TIMEOUT_IN_SECONDS = 1800; //30 minutes
 
+const parseOidcConfigFromEnv = (context: Context): OidcConfig => {
+    const envParseResult = OidcConfigSchema.safeParse(context);
+    if(!envParseResult.success){
+        const errorMsg = "ERROR: failed to parse OidcConfig from context env"; 
+        console.error(errorMsg, envParseResult.error);
+        throw new Error(errorMsg);
+    }
+    return envParseResult.data;
+}
+
 export const generateRedirectUrlToAuthService = async (context: Context): Promise<URL>  => {
-    const env = OidcConfigSchema.parse(context);
+    const env = parseOidcConfigFromEnv(context);
     const issuer = new URL(env.OIDC_SERVER_ISSUER_IDENTIFIER_URL);
     
     const discoveryRequestResponse = await discoveryRequest(issuer, {
