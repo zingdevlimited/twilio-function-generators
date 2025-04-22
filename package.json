@@ -10,7 +10,8 @@
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc --build",
     "watch": "yarn clean && tsc --watch",
-    "generate-package": "yarn build && yarn pack --out artifacts/%s-%v.tgz"
+    "generate-package": "yarn build && yarn pack --out artifacts/%s-%v.tgz",
+    "generate-key": "node scripts/generate-key.js"
   },
   "peerDependencies": {
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
