@@ -11,5 +11,6 @@
     },
     "editor.formatOnSave": true,
     "eslint.format.enable": true,
-    "cSpell.language": "en-GB"
+    "cSpell.language": "en-GB",
+    "sonarlint.analysisExcludesStandalone": "**/templates/compiled.ts"
 }

@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>{{title}}</title>
+    </head>
+    <body>
+        <div id="main">
+            <p id="message">
+                {{message}}
+            </p>
+            <a id="navLink" href="{{navLinkUrl}}">{{navLinkLabel}}</a>
+        </div>
+        <input id="status" type="hidden" value="{{status}}"/>
+        <script type="text/javascript">
+            const status = document.getElementById("status").value;
+            if(status !== "SUCCESS"){
+                return;
+            }
+            
+            try{
+                const redirectTo = window.sessionStorage.getItem("{{id}}_redirectToUrl");
+                if(typeof(redirectTo) === "string"){
+                    const redirectToUrl = new URL(redirectTo);
+                    window.location.replace(redirectToUrl);
+                    return;
+                }
+            }
+            catch(err){
+                console.error("failed to parse redirectToUrl", err);
+            }
+            const navLink = document.getElementById("navLink");
+            window.location.replace(navLink.href);
+        </script>
+    </body>
+</html>
