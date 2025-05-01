@@ -1,13 +1,7 @@
-export type EnvironmentValue = {
-    key: string
-    hashAlgorithm: "none" | "sha256"
-    encoding: "utf8" | "hex" | "base64"
-}
+export type RequestParameterLocation = "Header" | "Cookie" | "QueryStringOrBody";
 
-type RequestValueLocation = "Header" | "Cookie" | "QueryStringOrBody";
-
-export type RequestValue = {
-    location: RequestValueLocation,
-    parameterName: string;
-    prefixCaseInsensitive?: string;
+export type RequestParameter = {
+    parameterName: string
+    location: RequestParameterLocation
+    validateHasCaseInsensitivePrefix?: string
 }

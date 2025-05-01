@@ -3,7 +3,7 @@ import { Buffer } from "node:buffer";
 import z from "zod";
 import { generateTwilioSidSchema, getValueFromEnv, getValueFromEvent } from "../../helpers";
 import { AuthenticationHandlerResultBase } from "./base";
-import { RequestValue } from "../../types";
+import { RequestParameter } from "../../types";
 
 const FlexTokenResultSchema = z.object({
     valid: z.boolean(),
@@ -25,10 +25,11 @@ export interface FlexTokenAuthenticationHandlerResult extends AuthenticationHand
     flexTokenResult?: FlexTokenResult
 }
 
-export type FlexTokenAuthenticationHandler = (context: Context, event: ServerlessEventObject, flexTokenLocation: RequestValue) => Promise<FlexTokenAuthenticationHandlerResult>;
+export type FlexTokenAuthenticationHandler = 
+(context: Context<unknown>, event: ServerlessEventObject<unknown>, flexTokenRequestParameter: RequestParameter) 
+=> Promise<FlexTokenAuthenticationHandlerResult>;
 
-export const flexTokenAuthenticationHandler: FlexTokenAuthenticationHandler = 
-async (context: Context, event: ServerlessEventObject, flexTokenLocation: RequestValue) => {
+export const flexTokenAuthenticationHandler: FlexTokenAuthenticationHandler = async (context, event, flexTokenRequestParameter) => {
     const res: FlexTokenAuthenticationHandlerResult = {
         isAuthenticated: false,
         authenticationMethod: "FlexToken",
@@ -38,7 +39,7 @@ async (context: Context, event: ServerlessEventObject, flexTokenLocation: Reques
     const accountSid = getValueFromEnv("ACCOUNT_SID", context, true);
     const authToken = getValueFromEnv("AUTH_TOKEN", context, true);
 
-    const flexTokenFromRequest = getValueFromEvent(flexTokenLocation, event);
+    const flexTokenFromRequest = getValueFromEvent(flexTokenRequestParameter, event);
     if(!flexTokenFromRequest){
         return res;
     }
