@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <title>Login Callback</title>
+    </head>
+    <body>
+        <div id="main">
+            <p class="message">
+                {{message}}
+            </p>
+            <noscript>
+                <p class="message noscript">
+                    Javascript has been disabled, click the link below to go to the homepage.
+                </p>
+                <p class="link-container">
+                    <a id="navLink" href="/">Go Home</a>
+                </p>
+            </noscript>
+        </div>
+        <input id="status" type="hidden" value="{{status}}"/>
+        <script type="text/javascript">
+            (() => {
+                const status = document.getElementById("status").value;
+                if(status !== "SUCCESS"){
+                    return;
+                }
+                
+                try{
+                    const redirectTo = window.sessionStorage.getItem("z_tfg_oidc_cbr");
+                    if(typeof(redirectTo) === "string"){
+                        const redirectToUrl = new URL(redirectTo);
+                        window.location.replace(redirectToUrl);
+                        return;
+                    }
+                }
+                catch(err){
+                    console.error("failed to parse z_tfg_oidc_cbr session key to URL", err);
+                }
+                console.log("redirecting to homepage (/)")
+                window.location.replace("/");
+            })();
+        </script>
+    </body>
+</html>
