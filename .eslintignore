@@ -1,0 +1,11 @@
+.devcontainer
+.vscode
+.yarn
+
+dist
+node_modules
+
+src/auth/web/templates/*.hbs
+src/auth/web/templates/*.ts
+
+**/*.md
