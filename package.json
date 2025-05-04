@@ -1,55 +1,57 @@
 {
-    "name": "twilio-function-generators",
-    "version": "0.0.2",
-    "packageManager": "yarn@4.9.1",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/zingdevlimited/twilio-function-generators.git"
-    },
-    "scripts": {
-        "clean": "rm -rf dist",
-        "build": "yarn clean && yarn precompile-templates && tsc --build --force",
-        "watch": "yarn clean && tsc --watch",
-        "generate-package": "yarn build && yarn pack --out artifacts/%s-%v.tgz",
-        "generate-key": "node scripts/generate-key.js",
-        "precompile-templates": "node scripts/compile-templates.js",
-        "lint": "yarn eslint ."
-    },
-    "peerDependencies": {
-        "@twilio-labs/serverless-runtime-types": "^4.0.1",
-        "handlebars": "^4.7.8",
-        "zod": "^3.24.3"
-    },
-    "devDependencies": {
-        "@twilio-labs/serverless-runtime-types": "^4.0.1",
-        "@types/jsonwebtoken": "^9",
-        "@typescript-eslint/eslint-plugin": "^8.31.1",
-        "@typescript-eslint/parser": "^8.31.1",
-        "eslint": "^9.25.1",
-        "eslint-config-prettier": "^10.1.2",
-        "handlebars": "^4.7.8",
-        "prettier": "^3.5.3",
-        "typescript": "^5.8.3",
-        "zod": "^3.24.3"
-    },
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
-        }
-    },
-    "files": [
-        "dist"
-    ],
-    "engines": {
-        "node": ">=18.0.0",
-        "typescript": ">=5.0.0"
-    },
-    "dependencies": {
-        "jsonwebtoken": "^9.0.2",
-        "oauth4webapi": "^3.5.0",
-        "ulidx": "^2.4.1"
-    }
+	"name": "twilio-function-generators",
+	"version": "0.0.2",
+	"packageManager": "yarn@4.9.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/zingdevlimited/twilio-function-generators.git"
+	},
+	"scripts": {
+		"clean": "rm -rf dist",
+		"build": "yarn clean && yarn precompile-templates && tsc --build --force",
+		"watch": "yarn clean && tsc --watch",
+		"generate-package": "yarn build && yarn pack --out artifacts/%s-%v.tgz",
+		"generate-key": "node scripts/generate-key.js",
+		"precompile-templates": "node scripts/compile-templates.js",
+		"lint": "yarn eslint .",
+		"format:write": "prettier --write '**/?(.)*.{css,scss,js,ts,tsx,json,yaml,yml}'",
+		"format:check": "prettier --check '**/?(.)*.{css,scss,js,ts,tsx,json,yaml,yml}'"
+	},
+	"peerDependencies": {
+		"@twilio-labs/serverless-runtime-types": "^4.0.1",
+		"handlebars": "^4.7.8",
+		"zod": "^3.24.3"
+	},
+	"devDependencies": {
+		"@twilio-labs/serverless-runtime-types": "^4.0.1",
+		"@types/jsonwebtoken": "^9",
+		"@typescript-eslint/eslint-plugin": "^8.31.1",
+		"@typescript-eslint/parser": "^8.31.1",
+		"eslint": "^9.25.1",
+		"eslint-config-prettier": "^10.1.2",
+		"handlebars": "^4.7.8",
+		"prettier": "^3.5.3",
+		"typescript": "^5.8.3",
+		"zod": "^3.24.3"
+	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"engines": {
+		"node": ">=18.0.0",
+		"typescript": ">=5.0.0"
+	},
+	"dependencies": {
+		"jsonwebtoken": "^9.0.2",
+		"oauth4webapi": "^3.5.0",
+		"ulidx": "^2.4.1"
+	}
 }
