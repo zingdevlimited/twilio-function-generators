@@ -136,7 +136,10 @@ const generateAuthServiceCallbackResponse = (
 };
 
 /**
- *
+ * This method generates a full page response which will redirect the user to the configured OIDC provider on load,
+ * if javascript is enabled, or provide a link to click if not. AuthState is encrypted and stored in a response cookie
+ * ready to bounce back with the login callback response once the user has authenticated.
+ * If an error occurs during generating the redirect URL or auth state, error message is displayed in the HTML page returned.
  * @param context current context of function execution
  * @param Response Constructor for creating TwilioResponse object to be returned, pass the global: Twilio.Response property.
  * @returns On success a TwilioResponse object with HTML content to redirect to OIDC provider, and auth state for PKCE in cookies.
@@ -152,6 +155,7 @@ export const generateRedirectToAuthServiceFullPageResponse = async (
 		| "CheckResponseMode"
 		| "FetchDiscovery"
 		| "ValidateDiscovery"
+		| "AuthorizationEndpointMissing"
 		| "GenerateAuthState"
 		| "GenerateAuthUrl"
 		| "GenerateAuthResponse" = "ParseConfig";
@@ -176,11 +180,11 @@ export const generateRedirectToAuthServiceFullPageResponse = async (
 		const discoveryRequestResponse = await discoveryRequest(issuer, {
 			algorithm: "oidc"
 		});
-		const authServer = await processDiscoveryResponse(issuer, discoveryRequestResponse);
-
 		onStep = "ValidateDiscovery";
+		const authServer = await processDiscoveryResponse(issuer, discoveryRequestResponse);
 		if (!authServer.authorization_endpoint) {
-			throw new Error();
+			onStep = "AuthorizationEndpointMissing";
+			throw new Error(onStep);
 		}
 
 		onStep = "GenerateAuthState";
@@ -253,6 +257,9 @@ export const generateRedirectToAuthServiceFullPageResponse = async (
 				message = `ERROR: failed to fetch discovery document`;
 				break;
 			case "ValidateDiscovery":
+				message = `ERROR: failed to validate OIDC discovery response${retryNote}`;
+				break;
+			case "AuthorizationEndpointMissing":
 				message = `ERROR: authorization_endpoint missing from discovery response${retryNote}`;
 				break;
 			case "GenerateAuthState":
@@ -264,44 +271,33 @@ export const generateRedirectToAuthServiceFullPageResponse = async (
 			case "GenerateAuthResponse":
 				message = `ERROR: failed to generate response object${retryNote}`;
 				break;
-			default:
-				const exhaustiveCheck: never = onStep;
-				message = `Unhandled case: ${exhaustiveCheck}${retryNote}`;
 		}
 		return generateRedirectToAuthServiceErrorResponse(Response, runningOnLocalhost, message);
 	}
 };
 
-/**
- *
- * @param context
- * @param event
- * @param Response
- * @returns
- */
 export const processAuthServiceCallbackAndReturnFullPageResponse = async (
 	context: Context<unknown>,
 	event: ServerlessEventObject<unknown>,
 	Response: ResponseConstructor
 ): Promise<TwilioResponse> => {
 	const runningOnLocalhost = isRunningLocally(context);
-	let onStep: "ParseConfig" | "GetCookie" = "ParseConfig";
+	let onStep:
+		| "ParseConfig"
+		| "GetStateTag"
+		| "GetCookie"
+		| "ParseAuthCookie"
+		| "DecryptAuthState"
+		| "ParseAuthState"
+		| "AuthStateExpired"
+		| "FetchDiscovery"
+		| "ValidateDiscovery"
+		| "TokenEndpointMissing"
+		| "ValidateCallback" = "ParseConfig";
 	try {
 		const env = OidcConfigSchema.parse(context);
 
-		onStep = "GetCookie";
-		const cookieName = getAuthCookieName(runningOnLocalhost);
-		const authorizationStateCookieEncodedString = getValueFromEvent(
-			{
-				location: "Cookie",
-				parameterName: cookieName
-			},
-			event
-		);
-
-		if (!authorizationStateCookieEncodedString) {
-		}
-
+		onStep = "GetStateTag";
 		const stateParam = getValueFromEvent(
 			{
 				location: "QueryStringOrBody",
@@ -309,23 +305,30 @@ export const processAuthServiceCallbackAndReturnFullPageResponse = async (
 			},
 			event
 		);
-
 		if (!stateParam) {
-			return generateAuthServiceCallbackResponse(
-				Response,
-				runningOnLocalhost,
-				"ERROR",
-				"state parameter missing from request"
-			);
+			throw new Error(onStep);
 		}
 		const authTag = Buffer.from(stateParam, AUTH_TAG_QUERY_STRING_PARAM_ENCODING);
 
-		const cookieJson = Buffer.from(authorizationStateCookieEncodedString, AUTH_STATE_COOKIE_ENCODING).toString(
-			"utf8"
+		onStep = "GetCookie";
+		const cookieName = getAuthCookieName(runningOnLocalhost);
+		const authCookieEncodedString = getValueFromEvent(
+			{
+				location: "Cookie",
+				parameterName: cookieName
+			},
+			event
 		);
-		const cookieUnknownObj = JSON.parse(cookieJson);
-		const authStateCookie = AuthStateCookieSchema.parse(cookieUnknownObj);
+		if (!authCookieEncodedString) {
+			throw new Error(onStep);
+		}
 
+		onStep = "ParseAuthCookie";
+		const authCookieJson = Buffer.from(authCookieEncodedString, AUTH_STATE_COOKIE_ENCODING).toString("utf8");
+		const authCookieUnknownObj: unknown = JSON.parse(authCookieJson);
+		const authStateCookie = AuthStateCookieSchema.parse(authCookieUnknownObj);
+
+		onStep = "DecryptAuthState";
 		const privateKey = Buffer.from(env.AUTH_OIDC_STATE_ENCRYPTION_KEY_HEX_ENCODED, "hex");
 		const decipher = createDecipheriv(
 			ENCRYPTION_CIPHER_ALGORITHM,
@@ -333,16 +336,51 @@ export const processAuthServiceCallbackAndReturnFullPageResponse = async (
 			Buffer.from(authStateCookie.iv, AUTH_STATE_COOKIE_ENCODING)
 		);
 		decipher.setAuthTag(authTag);
-
 		const authStateJson =
 			decipher.update(authStateCookie.authStateEncrypted, AUTH_STATE_COOKIE_ENCODING, "utf8") +
 			decipher.final("utf8");
 
-		// const encryptedAuthStateString = authStateCookie.authState;
+		onStep = "ParseAuthState";
+		const authStateUnknownObj: unknown = JSON.parse(authStateJson);
+		const authState = AuthStateSchema.parse(authStateUnknownObj);
 
-		// authState = AuthStateSchema.parse(authStateUnknownObj);
+		const now = new Date();
+		if (now.valueOf() > authState.expiryEpochMs) {
+			onStep = "AuthStateExpired";
+			throw new Error(onStep);
+		}
 
-		// authState.
+		onStep = "FetchDiscovery";
+		const { discoveryRequest, processDiscoveryResponse, validateAuthResponse, ClientSecretPost } = await import(
+			"oauth4webapi"
+		);
+		const issuer = new URL(env.AUTH_OIDC_SERVER_ISSUER_IDENTIFIER_URL);
+		const discoveryRequestResponse = await discoveryRequest(issuer, {
+			algorithm: "oidc"
+		});
+		onStep = "ValidateDiscovery";
+		const authServer = await processDiscoveryResponse(issuer, discoveryRequestResponse);
+		if (!authServer.token_endpoint) {
+			onStep = "TokenEndpointMissing";
+			throw new Error(onStep);
+		}
+
+		const clientAuth = oauth.ClientSecretPost(client_secret);
+
+		onStep = "ValidateCallback";
+		//nonce, state also
+		validateAuthResponse(
+			authServer,
+			{
+				client_id: env.AUTH_OIDC_CLIENT_ID
+			},
+			params,
+			skipst
+		);
+
+		// //const clientAuth = ClientSecretPost(env.AUTH_OIDC_CLIENT_SECRET);
+		// //validateAuthResponse(as, client,)
+		// return Promise.resolve(false);
 	} catch (err) {
 		console.error("processAuthServiceCallbackAndReturnFullPageResponse", err);
 		let message: string | undefined;
@@ -351,30 +389,16 @@ export const processAuthServiceCallbackAndReturnFullPageResponse = async (
 			case "ParseConfig":
 				message = `ERROR: failed to parse OIDC Config from context${retryNote}`;
 				break;
+			case "GetCookie":
+				message = `ERROR: failed to read authState cookie${retryNote}`;
+				break;
+			case "GetStateTag":
+				message = `ERROR: state parameter missing from callback${retryNote}`;
+				break;
+			case "TokenEndpointMissing":
+				message = `ERROR: token_endpoint missing from discovery response${retryNote}`;
+				break;
 		}
 		return generateAuthServiceCallbackResponse(Response, runningOnLocalhost, "ERROR", message);
 	}
-
-	// const {
-	//     discoveryRequest,
-	//     processDiscoveryResponse,
-	//     validateAuthResponse
-	// } = await import('oauth4webapi');
-
-	// const issuer = new URL(env.AUTH_OIDC_SERVER_ISSUER_IDENTIFIER_URL);
-	// const discoveryRequestResponse = await discoveryRequest(issuer, {
-	//     algorithm: "oidc"
-	// });
-	// const authServer = await processDiscoveryResponse(issuer, discoveryRequestResponse);
-	// if(!authServer.token_endpoint){
-	//     throw new Error("token_endpoint missing from discovery response");
-	// }
-
-	// validateAuthResponse(authServer, {
-	//     client_id: env.AUTH_OIDC_CLIENT_ID
-	// }, params, skipst )
-
-	// //const clientAuth = ClientSecretPost(env.AUTH_OIDC_CLIENT_SECRET);
-	// //validateAuthResponse(as, client,)
-	// return Promise.resolve(false);
 };
