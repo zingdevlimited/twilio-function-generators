@@ -19,10 +19,10 @@ const FlexTokenResultSchema = z.object({
 });
 type FlexTokenResult = z.infer<typeof FlexTokenResultSchema>;
 
-export interface FlexTokenAuthenticationHandlerResult extends AuthenticationHandlerResultBase {
+export type FlexTokenAuthenticationHandlerResult = {
 	authenticationMethod: "FlexToken";
 	flexTokenResult?: FlexTokenResult;
-}
+} & AuthenticationHandlerResultBase;
 
 export type FlexTokenAuthenticationHandler = (
 	context: Context<unknown>,
@@ -64,7 +64,7 @@ export const flexTokenAuthenticationHandler: FlexTokenAuthenticationHandler = as
 	});
 
 	if (validateResponse.ok) {
-		const resObj = await validateResponse.json();
+		const resObj: unknown = await validateResponse.json();
 		const resObjParseResult = FlexTokenResultSchema.safeParse(resObj);
 		if (resObjParseResult.success) {
 			res.isAuthenticated = resObjParseResult.data.valid;

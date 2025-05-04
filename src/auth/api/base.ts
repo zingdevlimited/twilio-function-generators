@@ -1,4 +1,3 @@
-export interface AuthenticationHandlerResultBase {
+export type AuthenticationHandlerResultBase = {
 	isAuthenticated: boolean;
-	authenticationMethod: string;
-}
+};

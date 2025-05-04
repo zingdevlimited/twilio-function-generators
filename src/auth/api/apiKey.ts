@@ -4,10 +4,10 @@ import { getValueFromEnv, getValueFromEvent } from "../../helpers";
 import { RequestParameter } from "../../types";
 import { AuthenticationHandlerResultBase } from "./base";
 
-export interface ApiKeyAuthenticationHandlerResult extends AuthenticationHandlerResultBase {
+export type ApiKeyAuthenticationHandlerResult = {
 	authenticationMethod: "ApiKey";
 	forPrefix?: string;
-}
+} & AuthenticationHandlerResultBase;
 
 export type ApiKeyAuthenticationHandler = (
 	context: Context<unknown>,

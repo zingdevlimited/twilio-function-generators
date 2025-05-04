@@ -112,14 +112,14 @@ export const generateServiceJwt = (
 	return jwt;
 };
 
-interface ServiceJwtAuthenticationHandlerResultBase extends AuthenticationHandlerResultBase {
+type ServiceJwtAuthenticationHandlerResultBase = {
 	authenticationMethod: "ServiceJwt";
-}
+} & AuthenticationHandlerResultBase;
 
-interface ServiceJwtAuthenticationHandlerFailureResult extends ServiceJwtAuthenticationHandlerResultBase {
+type ServiceJwtAuthenticationHandlerFailureResult = {
 	isAuthenticated: false;
 	errorMessage: string;
-}
+} & ServiceJwtAuthenticationHandlerResultBase;
 
 const generateFailedResult = (errorMessage: string): ServiceJwtAuthenticationHandlerFailureResult => {
 	return {
@@ -129,12 +129,11 @@ const generateFailedResult = (errorMessage: string): ServiceJwtAuthenticationHan
 	};
 };
 
-interface ServiceJwtAuthenticationHandlerSuccessResult<T extends JwtPayloadStandardProps>
-	extends ServiceJwtAuthenticationHandlerResultBase {
+type ServiceJwtAuthenticationHandlerSuccessResult<T extends JwtPayloadStandardProps> = {
 	isAuthenticated: true;
 	jwt: string;
 	claims: T;
-}
+} & ServiceJwtAuthenticationHandlerResultBase;
 
 export type ServiceJwtAuthenticationHandlerResult<T extends JwtPayloadStandardProps> =
 	| ServiceJwtAuthenticationHandlerFailureResult
@@ -183,7 +182,7 @@ export const serviceJwtAuthenticationHandler: ServiceJwtAuthenticationHandler = 
 			issuer: config.AUTH_JWT_ISSUER,
 			audience: config.AUTH_JWT_AUDIENCE
 		});
-		const sessionParseResult = additionalJwtClaimsSchema.safeParse(
+		const sessionParseResult = JwtPayloadStandardPropsSchema.merge(additionalJwtClaimsSchema).safeParse(
 			typeof decoded === "string" ? JSON.parse(decoded) : decoded
 		);
 		if (sessionParseResult.success) {
@@ -203,7 +202,7 @@ export const serviceJwtAuthenticationHandler: ServiceJwtAuthenticationHandler = 
 		if (err instanceof TokenExpiredError) {
 			errorMessage = `${err.name} - ${err.message}. Expired At: ${convertToDateOrDefault(err.expiredAt).toISOString()}`;
 		} else if (err instanceof NotBeforeError) {
-			errorMessage = `${err.name} - ${err.message}. Date: ${convertToDateOrDefault(err.date)}`;
+			errorMessage = `${err.name} - ${err.message}. Date: ${convertToDateOrDefault(err.date).toISOString()}`;
 		} else if (err instanceof JsonWebTokenError) {
 			errorMessage = `${err.name} - ${err.message}`;
 		} else {
