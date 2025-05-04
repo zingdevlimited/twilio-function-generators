@@ -74,6 +74,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/js@npm:^9.26.0":
+  version: 9.26.0
+  resolution: "@eslint/js@npm:9.26.0"
+  checksum: 10c0/89fa45b7ff7f3c2589ea1f04a31b4f6d41ad85ecac98e519195e8b3a908b103c892ac19c4aec0629cfeccefd9e5b63c2f1269183d63016e7de722b97a085dcf4
+  languageName: node
+  linkType: hard
+
 "@eslint/object-schema@npm:^2.1.6":
   version: 2.1.6
   resolution: "@eslint/object-schema@npm:2.1.6"
@@ -999,6 +1006,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"globals@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "globals@npm:16.0.0"
+  checksum: 10c0/8906d5f01838df64a81d6c2a7b7214312e2216cf65c5ed1546dc9a7d0febddf55ffa906cf04efd5b01eec2534d6f14859a89535d1a68241832810e41ef3fd5bb
+  languageName: node
+  linkType: hard
+
 "gopd@npm:^1.2.0":
   version: 1.2.0
   resolution: "gopd@npm:1.2.0"
@@ -1666,12 +1680,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "twilio-function-generators@workspace:."
   dependencies:
+    "@eslint/eslintrc": "npm:^3.3.1"
+    "@eslint/js": "npm:^9.26.0"
     "@twilio-labs/serverless-runtime-types": "npm:^4.0.1"
     "@types/jsonwebtoken": "npm:^9"
     "@typescript-eslint/eslint-plugin": "npm:^8.31.1"
     "@typescript-eslint/parser": "npm:^8.31.1"
     eslint: "npm:^9.25.1"
     eslint-config-prettier: "npm:^10.1.2"
+    globals: "npm:^16.0.0"
     handlebars: "npm:^4.7.8"
     jsonwebtoken: "npm:^9.0.2"
     oauth4webapi: "npm:^3.5.0"

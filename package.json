@@ -13,7 +13,8 @@
 		"generate-package": "yarn build && yarn pack --out artifacts/%s-%v.tgz",
 		"generate-key": "node scripts/generate-key.js",
 		"precompile-templates": "node scripts/compile-templates.js",
-		"lint": "yarn eslint .",
+		"lint:check": "yarn eslint .",
+		"lint:write": "yarn eslint --fix .",
 		"format:write": "prettier --write '**/?(.)*.{css,scss,js,ts,tsx,json,yaml,yml}'",
 		"format:check": "prettier --check '**/?(.)*.{css,scss,js,ts,tsx,json,yaml,yml}'"
 	},
@@ -23,12 +24,15 @@
 		"zod": "^3.24.3"
 	},
 	"devDependencies": {
+		"@eslint/eslintrc": "^3.3.1",
+		"@eslint/js": "^9.26.0",
 		"@twilio-labs/serverless-runtime-types": "^4.0.1",
 		"@types/jsonwebtoken": "^9",
 		"@typescript-eslint/eslint-plugin": "^8.31.1",
 		"@typescript-eslint/parser": "^8.31.1",
 		"eslint": "^9.25.1",
 		"eslint-config-prettier": "^10.1.2",
+		"globals": "^16.0.0",
 		"handlebars": "^4.7.8",
 		"prettier": "^3.5.3",
 		"typescript": "^5.8.3",
