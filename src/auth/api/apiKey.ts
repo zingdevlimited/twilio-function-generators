@@ -5,13 +5,16 @@ import { RequestParameter } from "../../types";
 import { AuthenticationHandlerResultBase } from "./base";
 
 export interface ApiKeyAuthenticationHandlerResult extends AuthenticationHandlerResultBase {
-    authenticationMethod: "ApiKey"
-    forPrefix?: string
+	authenticationMethod: "ApiKey";
+	forPrefix?: string;
 }
 
-export type ApiKeyAuthenticationHandler = 
-(context: Context<unknown>, event: ServerlessEventObject<unknown>, apiKeyRequestParameter: RequestParameter, envPrefix?: string) 
-=> Promise<ApiKeyAuthenticationHandlerResult>;
+export type ApiKeyAuthenticationHandler = (
+	context: Context<unknown>,
+	event: ServerlessEventObject<unknown>,
+	apiKeyRequestParameter: RequestParameter,
+	envPrefix?: string
+) => Promise<ApiKeyAuthenticationHandlerResult>;
 
 /**
  * handler to process API Key authentication.
@@ -22,22 +25,27 @@ export type ApiKeyAuthenticationHandler =
  * any prefix given will be appended to "AUTH_API_KEY_SHA256_HASH_HEX_ENCODED".
  * @returns the result of the authentication check
  */
-export const apiKeyAuthenticationHandler: ApiKeyAuthenticationHandler = (context, event, apiKeyRequestParameter, envPrefix) => {
-    const res: ApiKeyAuthenticationHandlerResult = {
-        isAuthenticated: false,
-        authenticationMethod: "ApiKey"
-    }
+export const apiKeyAuthenticationHandler: ApiKeyAuthenticationHandler = (
+	context,
+	event,
+	apiKeyRequestParameter,
+	envPrefix
+) => {
+	const res: ApiKeyAuthenticationHandlerResult = {
+		isAuthenticated: false,
+		authenticationMethod: "ApiKey"
+	};
 
-    const configKey = `${envPrefix ?? ""}AUTH_API_KEY_SHA256_HASH_HEX_ENCODED`;
-    const keyFromConfig = getValueFromEnv(configKey, context, true);
+	const configKey = `${envPrefix ?? ""}AUTH_API_KEY_SHA256_HASH_HEX_ENCODED`;
+	const keyFromConfig = getValueFromEnv(configKey, context, true);
 
-    const apiKeyFromRequest = getValueFromEvent(apiKeyRequestParameter, event);
-    if(!apiKeyFromRequest){
-        return Promise.resolve(res);
-    }
-    const apiKeyFromRequestHashedAndHexEncoded = createHash("sha256").update(apiKeyFromRequest).digest("hex");
-    
-    res.isAuthenticated = apiKeyFromRequestHashedAndHexEncoded === keyFromConfig;
-    res.forPrefix = envPrefix;
-    return Promise.resolve(res);
-}
+	const apiKeyFromRequest = getValueFromEvent(apiKeyRequestParameter, event);
+	if (!apiKeyFromRequest) {
+		return Promise.resolve(res);
+	}
+	const apiKeyFromRequestHashedAndHexEncoded = createHash("sha256").update(apiKeyFromRequest).digest("hex");
+
+	res.isAuthenticated = apiKeyFromRequestHashedAndHexEncoded === keyFromConfig;
+	res.forPrefix = envPrefix;
+	return Promise.resolve(res);
+};

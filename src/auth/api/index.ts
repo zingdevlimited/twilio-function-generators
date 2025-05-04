@@ -6,4 +6,7 @@ export * from "./apiKey";
 export * from "./flexToken";
 export * from "./jwt";
 
-export type AuthenticationHandler = ApiKeyAuthenticationHandler | FlexTokenAuthenticationHandler | ServiceJwtAuthenticationHandler;
+export type AuthenticationHandler =
+	| ApiKeyAuthenticationHandler
+	| FlexTokenAuthenticationHandler
+	| ServiceJwtAuthenticationHandler;

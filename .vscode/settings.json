@@ -1,15 +1,15 @@
 {
-    "[markdown]": {
-        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
-    },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "always"
-    },
-    "editor.formatOnSave": true,
-    "eslint.format.enable": true,
-    "files.autoSave": "off",
-    "cSpell.language": "en-GB",
-    "cSpell.words": ["PKCE"],
-    "sonarlint.analysisExcludesStandalone": "**/templates/compiled.ts"
+	"[markdown]": {
+		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
+	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "always"
+	},
+	"editor.formatOnSave": true,
+	"eslint.format.enable": true,
+	"files.autoSave": "off",
+	"cSpell.language": "en-GB",
+	"cSpell.words": ["PKCE"],
+	"sonarlint.analysisExcludesStandalone": "**/templates/compiled.ts"
 }
