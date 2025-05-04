@@ -4,7 +4,7 @@
 dist
 node_modules
 
-src/auth/web/templates/*.ts
+src/auth/web/templates/compiled.ts
 
 .editorconfig
 .eslintignore

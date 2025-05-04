@@ -11,6 +11,8 @@ LICENCE
 tsconfig.tsbuildinfo
 yarn.lock
 
+src/auth/web/templates/compiled.ts
+
 *.md
 *.hbs
 *.html
