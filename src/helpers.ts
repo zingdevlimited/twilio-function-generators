@@ -48,6 +48,12 @@ export const getValueFromEvent = (source: RequestParameter, event: ServerlessEve
 			return ""; //no env value found
 		case "string":
 			break; //continue, we have found a param (all params passed as strings)
+		case "bigint":
+		case "boolean":
+		case "function":
+		case "number":
+		case "object":
+		case "symbol":
 		default:
 			console.warn("Unexpected value type: {0} in event for RequestParameter: {1}", typeof value, source);
 			return "";
@@ -76,7 +82,7 @@ export const getValueFromEvent = (source: RequestParameter, event: ServerlessEve
  * @returns value of sourceKey from env if exists, blank string if it does not (or exception thrown).
  */
 export const getValueFromEnv = (key: string, context: Context<unknown>, throwIfMissing: boolean = false): string => {
-	const env: Record<string, any> = context;
+	const env: Record<string, unknown> = context;
 	const value = env[key];
 	if (typeof value !== "string" || !value) {
 		if (throwIfMissing) {

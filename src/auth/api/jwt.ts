@@ -1,7 +1,7 @@
 import { JsonWebTokenError, NotBeforeError, sign, TokenExpiredError, verify } from "jsonwebtoken";
 import { Context, ServerlessEventObject } from "@twilio-labs/serverless-runtime-types/types";
 import { Buffer } from "node:buffer";
-import z, { ZodObject } from "zod";
+import z, { ZodObject, ZodRawShape } from "zod";
 import { ulid } from "ulidx";
 import { AuthenticationHandlerResultBase } from "./base";
 import { getValueFromEvent } from "../../helpers";
@@ -139,7 +139,7 @@ export type ServiceJwtAuthenticationHandlerResult<T extends JwtPayloadStandardPr
 	| ServiceJwtAuthenticationHandlerFailureResult
 	| ServiceJwtAuthenticationHandlerSuccessResult<T>;
 
-export type ServiceJwtAuthenticationHandler = <AdditionalJwtClaimsSchema extends ZodObject<{}>>(
+export type ServiceJwtAuthenticationHandler = <AdditionalJwtClaimsSchema extends ZodObject<ZodRawShape>>(
 	context: Context<unknown>,
 	event: ServerlessEventObject<unknown>,
 	jwtRequestParameter: RequestParameter,
