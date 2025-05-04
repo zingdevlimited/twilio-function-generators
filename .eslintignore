@@ -1,11 +1,24 @@
 .devcontainer
 .vscode
 .yarn
-
 dist
 node_modules
 
-src/auth/web/templates/*.hbs
 src/auth/web/templates/*.ts
 
-**/*.md
+.editorconfig
+.eslintignore
+.eslintrc
+.gitattributes
+.gitignore
+.prettierignore
+.prettierrc
+.yarnrc.yml
+LICENCE
+tsconfig.tsbuildinfo
+yarn.lock
+
+*.md
+*hbs
+.txt
+*.json
