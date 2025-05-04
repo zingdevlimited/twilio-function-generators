@@ -14,9 +14,9 @@
 		"generate-key": "node scripts/generate-key.js",
 		"precompile-templates": "node scripts/compile-templates.js",
 		"lint:check": "yarn eslint .",
-		"lint:write": "yarn eslint --fix .",
-		"format:write": "prettier --write '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'",
-		"format:check": "prettier --check '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'"
+		"lint:fix": "yarn eslint --fix .",
+		"format:check": "prettier --check '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'",
+		"format:write": "prettier --write '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'"
 	},
 	"peerDependencies": {
 		"@twilio-labs/serverless-runtime-types": "^4.0.1",
