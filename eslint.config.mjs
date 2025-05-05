@@ -53,7 +53,14 @@ export default defineConfig([
 		},
 
 		rules: {
-			"@typescript-eslint/no-unused-vars": "error",
+			"@typescript-eslint/no-unused-vars": [
+				"error",
+				{
+					argsIgnorePattern: "^_",
+					destructuredArrayIgnorePattern: "^_",
+					varsIgnorePattern: "^_"
+				}
+			],
 			"@typescript-eslint/consistent-type-definitions": ["error", "type"],
 			"@typescript-eslint/switch-exhaustiveness-check": "error"
 		}
