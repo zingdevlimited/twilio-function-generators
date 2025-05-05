@@ -17,14 +17,14 @@ const compat = new FlatCompat({
 
 export default defineConfig([
 	globalIgnores([
-		"src/auth/web/templates/*.*",
 		"**/.devcontainer",
 		"**/.vscode",
 		"**/.yarn",
 		"**/dist",
 		"**/node_modules",
 		"**/scripts",
-		"src/auth/web/templates/compiled.ts",
+		"packages/twilio-function-generators/src/auth/web/templates/*.*",
+		"packages/twilio-function-generators/src/auth/web/templates/compiled.ts",
 		"eslint.config.mjs",
 		"**/*.md",
 		"**/*hbs",

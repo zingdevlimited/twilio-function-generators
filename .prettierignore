@@ -11,7 +11,7 @@ LICENCE
 tsconfig.tsbuildinfo
 yarn.lock
 
-src/auth/web/templates/compiled.ts
+packages/twilio-function-generators/src/auth/web/templates/compiled.ts
 
 *.md
 *.hbs

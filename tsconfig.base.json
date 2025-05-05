@@ -4,8 +4,6 @@
 		"target": "ES2022", // Modern ECMAScript version
 		"module": "NodeNext", // Align with Node.js ESM (or "CommonJS" if needed)
 		"moduleResolution": "NodeNext", // Modern module resolution
-		"outDir": "./dist", // Output directory
-		"rootDir": "./src", // Source directory
 		"declaration": true, // Generate .d.ts type files
 		"declarationMap": true, // Generate sourcemaps for types
 		"sourceMap": true,
@@ -35,8 +33,5 @@
 		"**/__tests__", // Exclude test files
 		"node_modules", // Exclude dependencies
 		"dist" // Exclude build output
-	],
-	"include": [
-		"src/**/*.ts" // Include all TS files in src
 	]
 }
