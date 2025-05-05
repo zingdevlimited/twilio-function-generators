@@ -1,4 +1,5 @@
 import { Context, ServerlessEventObject } from "@twilio-labs/serverless-runtime-types/types";
+import { ulid } from "ulidx";
 import { z } from "zod";
 import { RequestParameter } from "./types";
 
@@ -72,6 +73,22 @@ export const getValueFromEvent = (source: RequestParameter, event: ServerlessEve
 };
 
 /**
+ * Extract Twilio Event SID from the parsed event object.
+ * @param event event to get Twilio Request ID from
+ * @returns the Twilio Request ID (RQ SID) from the event, if not found will generate a new ULID instead.
+ */
+export const getTwilioRequestId = (event: ServerlessEventObject<unknown>): string => {
+	const twilioRequestId = getValueFromEvent(
+		{
+			location: "Header",
+			parameterName: "t-request-id"
+		},
+		event
+	);
+	return twilioRequestId || ulid();
+};
+
+/**
  * attempts to retrieve value from environment variables through context.
  * if value cant be found either blank is returned or error is thrown depending
  * on throwIfMissing arg (defaults to false)
@@ -100,4 +117,29 @@ export const getValueFromEnv = (key: string, context: Context<unknown>, throwIfM
  */
 export const isRunningLocally = (context: Context<unknown>): boolean => {
 	return context.DOMAIN_NAME.toLowerCase().startsWith("localhost:");
+};
+
+/**
+ * Zod Schema of Record where keys are strings and values can be coerced as strings.
+ * used by getQueryStringAndBodyAsUrlSearchParams function.
+ */
+export const ServerlessEventQueryAndBodyRecordSchema = z.record(z.string(), z.coerce.string());
+
+/**
+ * extracts values passed to function in query string or request body
+ * (from post / json) and returns in URLSearchParams object.
+ * @param event event to parse
+ * @returns URLSearchParam object containing all key/value pairs of params passed into Twilio function
+ * on event with request prop removed. This will be values passed in query string or request body.
+ */
+export const getQueryStringAndBodyAsUrlSearchParams = (event: ServerlessEventObject<unknown>): URLSearchParams => {
+	const { request: _, ...rest } = event;
+	const record = ServerlessEventQueryAndBodyRecordSchema.parse(rest);
+	const res = new URLSearchParams();
+	for (const key in record) {
+		if (Object.hasOwn(record, key)) {
+			res.append(key, record[key]);
+		}
+	}
+	return res;
 };
