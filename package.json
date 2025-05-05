@@ -3,12 +3,23 @@
 	"private": true,
 	"version": "0.0.3",
 	"packageManager": "yarn@4.9.1",
-	"repository": "https://github.com/zingdevlimited/twilio-function-generators.git",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/zingdevlimited/twilio-function-generators.git"
+	},
 	"author": "Dan Hyrjak <dan.hyrjak@zing.dev>",
 	"license": "MIT",
 	"workspaces": [
 		"packages/*"
 	],
+	"scripts": {
+		"build": "yarn workspaces foreach -A run build",
+		"generate:key": "node scripts/generate-key.js",
+		"lint:check": "yarn eslint .",
+		"lint:fix": "yarn eslint --fix .",
+		"format:check": "prettier --check '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'",
+		"format:write": "prettier --write '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'"
+	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.1",
 		"@eslint/js": "^9.26.0",
@@ -19,13 +30,5 @@
 		"globals": "^16.0.0",
 		"prettier": "^3.5.3",
 		"typescript": "^5.8.3"
-	},
-	"scripts": {
-		"build": "yarn workspaces foreach -A run build",
-		"generate:key": "node scripts/generate-key.js",
-		"lint:check": "yarn eslint .",
-		"lint:fix": "yarn eslint --fix .",
-		"format:check": "prettier --check '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'",
-		"format:write": "prettier --write '**/?(.)*.{css,scss,js,mjs,ts,tsx,json,yaml,yml}'"
 	}
 }

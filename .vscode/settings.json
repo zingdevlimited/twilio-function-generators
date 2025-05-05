@@ -10,6 +10,6 @@
 	"eslint.format.enable": true,
 	"files.autoSave": "off",
 	"cSpell.language": "en-GB",
-	"cSpell.words": ["PKCE"],
+	"cSpell.words": ["Hyrjak", "PKCE"],
 	"sonarlint.analysisExcludesStandalone": "**/templates/compiled.ts"
 }
