@@ -1,0 +1,25 @@
+{
+	"name": "tfg-test-harness-backend",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"test": "tsc --noEmit",
+		"clean": "rm dist -rf && mkdir dist",
+		"start": "twilio-run",
+		"deploy": "twilio-run deploy",
+		"build": "yarn clean && yarn copy-assets && tsc --build --force",
+		"copy-assets": "cp -r src/assets dist/assets"
+	},
+	"dependencies": {
+		"@twilio-labs/serverless-runtime-types": "^4.0.1",
+		"@twilio/runtime-handler": "2.0.1",
+		"twilio": "5.6.0"
+	},
+	"devDependencies": {
+		"twilio-run": "^4.2.0",
+		"typescript": "^5.8.3"
+	},
+	"engines": {
+		"node": "22"
+	}
+}

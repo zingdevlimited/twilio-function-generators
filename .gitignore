@@ -1,6 +1,9 @@
 # Generated key by /scripts/generate-key.js
 key.txt
 
+# Twilio Serverless
+.twiliodeployinfo
+
 # Logs
 logs
 *.log

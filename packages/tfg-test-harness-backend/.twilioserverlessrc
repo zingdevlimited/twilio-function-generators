@@ -1,0 +1,10 @@
+{
+	"assets": true,
+	"assetsFolder": "dist/assets",
+	"functions": true,
+	"functionsFolder": "dist/functions",
+	"port": "3000",
+	"production": true,
+	"runtime": "node22",
+	"serviceName": "tfg-test-harness"
+}

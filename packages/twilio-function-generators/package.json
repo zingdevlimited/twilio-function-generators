@@ -31,6 +31,7 @@
 		"@twilio-labs/serverless-runtime-types": "^4.0.1",
 		"@types/jsonwebtoken": "^9",
 		"handlebars": "^4.7.8",
+		"typescript": "^5.8.3",
 		"zod": "^3.24.3"
 	},
 	"main": "./dist/index.js",

@@ -6,7 +6,8 @@
 		"baseUrl": "./src",
 		"composite": true,
 		"declaration": true,
-		"declarationMap": true
+		"declarationMap": true,
+		"types": ["node"]
 	},
 	"include": [
 		"src/**/*.ts" // Include all TS files in src

@@ -7,6 +7,7 @@
 		"declaration": true, // Generate .d.ts type files
 		"declarationMap": true, // Generate sourcemaps for types
 		"sourceMap": true,
+		"skipLibCheck": true,
 
 		/* Strict Type-Checking */
 		"strict": true, // Enable all strict checks
@@ -23,12 +24,25 @@
 
 		/* Module Handling */
 		"esModuleInterop": true, // Better ESM/CJS interop
+		"alwaysStrict": true,
 		"forceConsistentCasingInFileNames": true, // Case-sensitive file names
 
 		/* Project References */
 		"composite": true, // Enable project references
-		"incremental": true // Enable incremental builds
+		"incremental": true, // Enable incremental builds
+		"baseUrl": ".",
+		"paths": {
+			"@zingdev/twilio-function-generators": ["packages/twilio-function-generators/src/index.ts"]
+		}
 	},
+	"references": [
+		{
+			"path": "packages/twilio-function-generators"
+		},
+		{
+			"path": "packages/tfg-test-harness-backend"
+		}
+	],
 	"exclude": [
 		"**/__tests__", // Exclude test files
 		"node_modules", // Exclude dependencies
